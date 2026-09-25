@@ -90,9 +90,12 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      # This syncs any target branch to upstream branch of the same name
+      # Keep dev pinned to Loop 3.14.4 (upstream abfa1cd) for iOS 15 support.
+      # Later upstream versions require iOS 17.6 for OmnipodKit.
+      # Other branches sync to the upstream branch of the same name.
       - name: Sync upstream changes
         if: | # do not run the upstream sync action on the upstream repository
+          github.ref_name != 'dev' &&
           steps.workflow-permission.outputs.has_permission == 'true' &&
           vars.SCHEDULED_SYNC != 'false' && github.repository_owner != 'LoopKit'
         id: sync
